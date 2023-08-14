@@ -5,6 +5,12 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@babel/core": "^7.22.10",
+    "@babel/eslint-parser": "^7.22.10",
+    "eslint-config-ali": "^14.0.2",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-react": "^7.33.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "lerna": "^6.5.1",
     "typescript": "^5.1.6"
   }
