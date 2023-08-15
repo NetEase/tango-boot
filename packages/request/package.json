@@ -5,20 +5,23 @@
   "author": "wwsun <ww.sww@outlook.com>",
   "homepage": "https://github.com/music163/tango-boot#readme",
   "license": "MIT",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist/ && rimraf lib/",
+    "build": "yarn clean && yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc --project tsconfig.prod.json --outDir lib/esm/ --module ES2020",
+    "build:cjs": "tsc --project tsconfig.prod.json --outDir lib/cjs/ --module CommonJS",
+    "prepublishOnly": "yarn build"
   },
   "files": [
+    "dist",
     "lib"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/music163/tango-boot.git"
-  },
-  "scripts": {
-    "test": "node ./__tests__/request.test.js"
   },
   "bugs": {
     "url": "https://github.com/music163/tango-boot/issues"

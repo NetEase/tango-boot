@@ -1,0 +1,13 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "webpack serve",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@music163/tango-boot": "*",
+    "antd": "^5.8.3"
+  }
+}

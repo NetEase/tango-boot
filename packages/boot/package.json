@@ -5,22 +5,38 @@
   "author": "wwsun <ww.sww@outlook.com>",
   "homepage": "https://github.com/music163/tango-boot#readme",
   "license": "MIT",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist/ && rimraf lib/",
+    "build": "yarn clean && yarn build:esm && yarn build:cjs && yarn build:umd",
+    "build:esm": "tsc --project tsconfig.prod.json --outDir lib/esm/ --module ES2020",
+    "build:cjs": "tsc --project tsconfig.prod.json --outDir lib/cjs/ --module CommonJS",
+    "build:umd": "node ./scripts/pack.js",
+    "serve": "webpack serve --config ./scripts/webpack.config.dev.js",
+    "prepublishOnly": "yarn build"
   },
   "files": [
+    "dist",
     "lib"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/music163/tango-boot.git"
   },
-  "scripts": {
-    "test": "node ./__tests__/boot.test.js"
-  },
   "bugs": {
     "url": "https://github.com/music163/tango-boot/issues"
+  },
+  "dependencies": {
+    "@music163/request": "^0.1.0",
+    "@risingstack/react-easy-state": "^6.3.0",
+    "history": "^5.3.0",
+    "react-error-boundary": "^4.0.11",
+    "react-router": "5",
+    "react-router-config": "5"
+  },
+  "devDependencies": {
+    "@types/react-router": "^5.1.20"
   }
 }
