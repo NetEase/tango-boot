@@ -28,5 +28,9 @@
   },
   "dependencies": {
     "axios": "^1.4.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
