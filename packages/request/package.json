@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/music163/tango-boot/issues"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
   }
 }
