@@ -1,5 +1,5 @@
 {
-  "extends": ["eslint-config-ali/react"],
+  "extends": ["eslint-config-ali/typescript/react"],
   "ignorePatterns": [
     "**/dist/**/*",
     "**/lib/**/*",

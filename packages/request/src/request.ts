@@ -31,7 +31,7 @@ function createInstance(instanceConfig?: AxiosRequestConfig) {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   return instance;
@@ -41,24 +41,16 @@ export interface RequestInstance {
   (config: RequestConfig): Promise<any>;
   (url: string, config?: RequestConfig): Promise<any>;
 
-  get(
-    url: string,
-    params?: Record<string, any>,
-    config?: RequestConfig
-  ): Promise<any>;
+  get: (url: string, params?: Record<string, any>, config?: RequestConfig) => Promise<any>;
 
-  post(url: string, data?: any, config?: RequestConfig): Promise<any>;
+  post: (url: string, data?: any, config?: RequestConfig) => Promise<any>;
 
-  put(url: string, data?: any, config?: RequestConfig): Promise<any>;
+  put: (url: string, data?: any, config?: RequestConfig) => Promise<any>;
 }
 
 const request = createInstance() as RequestInstance;
 
-request.get = (
-  url: string,
-  params?: Record<string, any>,
-  config?: RequestConfig
-) => {
+request.get = (url: string, params?: Record<string, any>, config?: RequestConfig) => {
   return request({ url, params, ...config });
 };
 

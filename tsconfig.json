@@ -5,6 +5,7 @@
     "noEmit": true,
     "sourceMap": true,
     "resolveJsonModule": true,
+    "strictFunctionTypes": true,
     "paths": {
       "@music163/tango-boot": ["packages/boot/src/index.ts"],
       "@music163/request": ["packages/request/src/index.ts"],

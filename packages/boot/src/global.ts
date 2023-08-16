@@ -11,9 +11,9 @@ const globalTango = {
     return globalTango.stores[name];
   },
 
-  registerStore(name: string, store: StoreType) {
+  registerStore(name: string, storeInstance: StoreType) {
     if (!globalTango.getStore(name)) {
-      globalTango.stores[name] = store;
+      globalTango.stores[name] = storeInstance;
     }
   },
 

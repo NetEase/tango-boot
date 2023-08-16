@@ -21,7 +21,7 @@ export function createService(baseConfig: RequestConfig) {
 
 export function createServices(
   configs: Record<string, RequestConfig>,
-  baseConfig?: RequestConfig
+  baseConfig?: RequestConfig,
 ): Record<string, ReturnType<typeof createService>> {
   return Object.keys(configs).reduce((acc, key) => {
     acc[key] = createService({ ...configs[key], ...baseConfig });
