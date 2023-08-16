@@ -1,6 +1,6 @@
 {
   "name": "@music163/request",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "a request library based on axios",
   "author": "wwsun <ww.sww@outlook.com>",
   "homepage": "https://github.com/music163/tango-boot#readme",
