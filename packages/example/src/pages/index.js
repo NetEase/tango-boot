@@ -4,7 +4,11 @@ import { definePage } from '@music163/tango-boot';
 class App extends React.Component {
   render() {
     return (
-      <div>hello</div>
+      <div>
+        <h1>{tango.stores.counter.number}</h1>
+        <button onClick={tango.stores.counter.add}>+</button>
+        <button onClick={tango.stores.counter.decrement}>-</button>
+      </div>
     );
   }
 }

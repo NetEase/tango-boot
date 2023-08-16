@@ -1,4 +1,9 @@
 {
   "extends": ["eslint-config-ali/react"],
-  "ignorePatterns": ["**/dist/**/*", "**/node_modules/**/*", "scripts/**/*"]
+  "ignorePatterns": [
+    "**/dist/**/*",
+    "**/lib/**/*",
+    "**/node_modules/**/*",
+    "scripts/**/*"
+  ]
 }

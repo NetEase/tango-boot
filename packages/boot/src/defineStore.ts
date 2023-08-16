@@ -1,6 +1,7 @@
 import { store } from '@risingstack/react-easy-state';
+import globalTango from './global';
 
-export const globalStore = store({});
+// export const globalStore = store({});
 
 /**
  * 创建 Store 实例
@@ -8,14 +9,15 @@ export const globalStore = store({});
  * @param namespace 命名空间，暂时废弃，不推荐使用
  * @returns
  */
-export function defineStore(object: any, namespace?: string) {
-  if (namespace) {
-    globalStore[namespace] = object;
-    return globalStore[namespace];
-    // return bind(globalStore[namespace]);
-  }
-  const ret = store(object);
-  return bind(ret);
+export function defineStore(object: any, namespace: string) {
+  // if (namespace) {
+  //   globalStore[namespace] = object;
+  //   return globalStore[namespace];
+  //   // return bind(globalStore[namespace]);
+  // }
+  const ret = bind(store(object));
+  globalTango.registerStore(namespace, ret);
+  return ret;
 }
 
 function bind(object: any) {

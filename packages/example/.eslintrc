@@ -1,3 +1,6 @@
 {
-  "extends": ["eslint-config-ali/react"]
+  "extends": ["eslint-config-ali/react"],
+  "globals": {
+    "tango": "readonly"
+  }
 }
