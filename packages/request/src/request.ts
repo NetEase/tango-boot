@@ -9,16 +9,6 @@ function createInstance(instanceConfig?: AxiosRequestConfig) {
   // 避免多个实例产生冲突
   const instance = axios.create(instanceConfig);
 
-  // TODO: normalizer
-  // TODO: formatter
-
-  // 补齐 origin 上挂载的属性
-  Object.keys(origin).forEach((name) => {
-    if (!instance[name]) {
-      instance[name] = origin[name];
-    }
-  });
-
   // request 拦截器
   // instance.interceptors.request.use(
   //   (config) => {
@@ -47,6 +37,29 @@ function createInstance(instanceConfig?: AxiosRequestConfig) {
   return instance;
 }
 
-export type RequestType = (url: string, config?: RequestConfig) => Promise<any>;
+export interface RequestInstance {
+  (config: RequestConfig): Promise<any>;
+  (url: string, config?: RequestConfig): Promise<any>;
 
-export default createInstance() as RequestType;
+  get(
+    url: string,
+    params?: Record<string, any>,
+    config?: RequestConfig
+  ): Promise<any>;
+
+  post(url: string, data?: any, config?: RequestConfig): Promise<any>;
+
+  put(url: string, data?: any, config?: RequestConfig): Promise<any>;
+}
+
+const request = createInstance() as RequestInstance;
+
+request.get = (
+  url: string,
+  params?: Record<string, any>,
+  config?: RequestConfig
+) => {
+  return request({ url, params, ...config });
+};
+
+export default request;
