@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 import { RouteConfig, renderRoutes } from 'react-router-config';
-import { createBrowserHistory } from 'history';
+import { History, createBrowserHistory, createHashHistory } from 'history';
 
 export interface RunAppConfig {
   /**
@@ -12,8 +12,13 @@ export interface RunAppConfig {
     mountElement: HTMLElement;
     qiankun: false | { appName: string };
   };
+  router?: {
+    config: RouteConfig[];
+    type?: 'browser' | 'hash';
+    basename?: string;
+  };
   /**
-   * 路由配置
+   * 路由配置, router.config 的快捷写法
    */
   routes: RouteConfig[];
   /**
@@ -31,8 +36,10 @@ export function runApp(config: RunAppConfig) {
 }
 
 function runReactApp(config: RunAppConfig) {
+  const routes = config.router?.config ?? config.routes;
+  const history = config.router?.type === 'hash' ? createBrowserHistory() : createHashHistory();
   // eslint-disable-next-line react/no-deprecated
-  ReactDOM.render(<ReactRouterApp routes={config.routes} />, config.boot.mountElement);
+  ReactDOM.render(<ReactRouterApp history={history} routes={routes} />, config.boot.mountElement);
 }
 
 function runQiankunApp(config: RunAppConfig) {
@@ -56,17 +63,18 @@ function runQiankunApp(config: RunAppConfig) {
 }
 
 interface ReactRouterAppProps {
-  routes?: RouteConfig[];
+  history: History;
+  routes: RouteConfig[];
 }
 
-function ReactRouterApp({ routes = [] }: ReactRouterAppProps) {
+function ReactRouterApp({ history, routes = [] }: ReactRouterAppProps) {
   if (!routes.find((route) => !route.path)) {
     // 如果用户没有定义 404 路由，则自动添加一个
     routes.push({
       component: NotFound,
     });
   }
-  return <Router history={createBrowserHistory()}>{renderRoutes(routes)}</Router>;
+  return <Router history={history}>{renderRoutes(routes)}</Router>;
 }
 
 function NotFound() {
