@@ -11,3 +11,6 @@ export * from './definePage';
 export * from './defineServices';
 export * from './defineStore';
 export * from './runApp';
+export * from './Collector';
+
+export * from '@risingstack/react-easy-state';

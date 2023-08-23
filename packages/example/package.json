@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@music163/tango-boot": "*",
-    "antd": "^5.8.3"
+    "antd": "^5.8.3",
+    "react-json-view": "^1.21.3"
   }
 }
