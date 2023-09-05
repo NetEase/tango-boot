@@ -2,11 +2,12 @@
   "name": "boot",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "start": "concurrently \"yarn dev\" \"yarn serve:boot\"",
-    "dev": "yarn workspace example dev",
+    "dev": "yarn workspace basic-example dev",
     "build": "lerna run build",
     "build:boot": "yarn workspace @music163/tango-boot build",
     "serve:boot": "yarn workspace @music163/tango-boot serve",
