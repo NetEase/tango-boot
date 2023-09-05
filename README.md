@@ -17,6 +17,9 @@ Run the example app via the following commands:
 # install dependencies
 yarn
 
+# build the library
+yarn build
+
 # start the example app
 yarn start
 ```

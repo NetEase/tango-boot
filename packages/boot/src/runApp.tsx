@@ -12,19 +12,25 @@ export interface RunAppConfig {
     mountElement: HTMLElement;
     qiankun: false | { appName: string };
   };
-  router?: {
-    config: RouteConfig[];
-    type?: 'browser' | 'hash';
-    basename?: string;
-  };
   /**
-   * 路由配置, router.config 的快捷写法
+   * 单个页面应用的根组件，适合不需要前端路由的情况
+   */
+  singleEntry?: React.ComponentType;
+  /**
+   * 多页应用路由配置, router.config 的快捷写法
    */
   routes: RouteConfig[];
   /**
+   * 路由配置
+   */
+  router?: {
+    config: RouteConfig[];
+    type?: 'browser' | 'hash';
+  };
+  /**
    * 根组件的父容器设置，传入的组件将一次作为应用根节点的父级组件
    */
-  providers?: React.ReactElement[];
+  providers?: AppContainerProps['providers'];
 }
 
 export function runApp(config: RunAppConfig) {
@@ -36,10 +42,23 @@ export function runApp(config: RunAppConfig) {
 }
 
 function runReactApp(config: RunAppConfig) {
+  let element;
   const routes = config.router?.config ?? config.routes;
-  const history = config.router?.type === 'hash' ? createBrowserHistory() : createHashHistory();
+  if (routes) {
+    // react router app
+    const routerType = config.router?.type ?? 'hash';
+    const history = routerType === 'hash' ? createBrowserHistory() : createHashHistory();
+    element = <ReactRouterApp history={history} routes={routes} />;
+  } else {
+    // single entry app
+    const SingleEntry = config.singleEntry || 'div';
+    element = <SingleEntry />;
+  }
   // eslint-disable-next-line react/no-deprecated
-  ReactDOM.render(<ReactRouterApp history={history} routes={routes} />, config.boot.mountElement);
+  ReactDOM.render(
+    <AppContainer providers={config.providers}>{element}</AppContainer>,
+    config.boot.mountElement,
+  );
 }
 
 function runQiankunApp(config: RunAppConfig) {
@@ -60,6 +79,24 @@ function runQiankunApp(config: RunAppConfig) {
       ReactDOM.unmountComponentAtNode(target.querySelector(mountId));
     },
   };
+}
+
+interface AppContainerProps {
+  providers?: React.ReactElement[];
+  children: React.ReactNode;
+}
+
+function AppContainer({ children: childrenProp, providers = [] }: AppContainerProps) {
+  let children = childrenProp;
+  if (providers && providers.length) {
+    children = providers.reduce((prev, provider) => {
+      if (React.isValidElement(provider)) {
+        return React.cloneElement(provider, {}, prev);
+      }
+      return prev;
+    }, childrenProp);
+  }
+  return <>{children}</>;
 }
 
 interface ReactRouterAppProps {
