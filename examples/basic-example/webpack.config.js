@@ -18,8 +18,7 @@ module.exports = {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers':
-        'X-Requested-With, content-type, Authorization',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
     },
   },
   module: {
@@ -46,6 +45,7 @@ module.exports = {
     moment: 'moment',
     'styled-components': 'styled',
     '@music163/tango-boot': 'TangoBoot',
+    antd: 'antd',
   },
   plugins: [
     new HtmlWebpackPlugin({
