@@ -1,16 +1,13 @@
-# `boot`
+# TangoBoot
 
-> A simple javascript runtime framework for react app
+TangoBoot is a frontend framework that serves the NetEase Tango Low-Code applications. It provides standard data requests, state management, and routing solutions, as well as generic runtime utility functions, allowing developers to generate Single Page Applications through less codes.
+
+Documentation: <https://netease.github.io/tango/docs/boot/intro/>
 
 ## Usage
 
 ```jsx
-import {
-  runApp,
-  definePage,
-  defineStore,
-  defineServices,
-} from '@music163/boot';
+import { runApp, definePage, defineStore, defineServices } from '@music163/boot';
 ```
 
 ### defineStore
@@ -32,7 +29,7 @@ defineStore(
       this.number--;
     },
   },
-  'counter'
+  'counter',
 );
 ```
 
