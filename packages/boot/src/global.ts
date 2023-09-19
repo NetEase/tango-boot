@@ -55,8 +55,15 @@ const globalTango = {
     }
   },
 
-  registerServices(services: any) {
-    globalTango.services = services;
+  registerServices(services: any, namespace?: string) {
+    if (namespace) {
+      globalTango.services[namespace] = services;
+    } else {
+      globalTango.services = {
+        ...globalTango.services,
+        ...services,
+      };
+    }
   },
 };
 

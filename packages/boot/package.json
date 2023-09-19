@@ -28,6 +28,10 @@
   "bugs": {
     "url": "https://github.com/music163/tango-boot/issues"
   },
+  "peerDependencies": {
+    "react": ">= 16.8",
+    "react-router": "5"
+  },
   "dependencies": {
     "@music163/request": "^0.1.2",
     "@risingstack/react-easy-state": "^6.3.0",
