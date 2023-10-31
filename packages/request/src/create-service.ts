@@ -1,6 +1,12 @@
 import request, { RequestConfig } from './request';
+import globalConfig from './global-config';
 
-export function createService(baseConfig: RequestConfig) {
+export interface CreateServiceConfig extends RequestConfig {
+  onSuccess?: (data: any) => any;
+  onError?: (error: any) => any;
+}
+
+export function createService({ onSuccess, onError, ...baseConfig }: CreateServiceConfig) {
   return async (payload?: any, config?: RequestConfig) => {
     const {
       method = 'get',
@@ -11,10 +17,12 @@ export function createService(baseConfig: RequestConfig) {
       ...baseConfig,
     };
     try {
-      const resp = await request[method](url, payload, restConfig);
-      return resp;
+      const data = await request[method](url, payload, restConfig);
+      onSuccess?.(data);
+      return data;
     } catch (err) {
-      // TODO: handle error
+      globalConfig.message?.error((err as any).message);
+      onError?.(err);
     }
   };
 }
