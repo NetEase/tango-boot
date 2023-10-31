@@ -17,7 +17,8 @@ export function createService({ onSuccess, onError, ...baseConfig }: CreateServi
       ...baseConfig,
     };
     try {
-      const data = await request[method](url, payload, restConfig);
+      const fn = fixMethod(method);
+      const data = await request[fn](url, payload, restConfig);
       onSuccess?.(data);
       return data;
     } catch (err) {
@@ -35,4 +36,14 @@ export function createServices(
     acc[key] = createService({ ...configs[key], ...baseConfig });
     return acc;
   }, {});
+}
+
+const methodMap = {
+  postformdata: 'postFormData',
+  postformurlencoded: 'postFormUrlencoded',
+};
+
+function fixMethod(method: string) {
+  method = method.toLowerCase();
+  return methodMap[method] || method;
 }
