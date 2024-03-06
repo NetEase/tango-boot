@@ -90,8 +90,6 @@ export interface TangoComponentProps {
 
 const registerEmpty = () => ({});
 
-// TODO: 合并 withDnd 和 defineComponent
-
 export function defineComponent<P>(
   BaseComponent: React.ComponentType<P>,
   options?: DefineComponentConfig,
