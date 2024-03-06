@@ -4,11 +4,7 @@ import { hoistNonReactStatics, isFunction, isFunctionComponent } from '@music163
 import tangoBoot from './global';
 import { mergeRefs } from './helpers';
 
-interface DefineComponentConfig {
-  /**
-   * displayName
-   */
-  name?: string;
+interface RegisterValueConfig {
   /**
    * 绑定的 value 属性名
    */
@@ -21,6 +17,17 @@ interface DefineComponentConfig {
    * 设置从事件回调中获取 value 值的方法
    */
   getValueFromEvent?: (...args: any[]) => any;
+}
+
+interface DefineComponentConfig {
+  /**
+   * displayName
+   */
+  name?: string;
+  /**
+   * 从组件同步值到 model 的配置
+   */
+  registerValue?: false | RegisterValueConfig;
   /**
    * 注册自定义的组件状态或行为
    * @returns
@@ -63,14 +70,17 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
 ) {
   const displayName =
     options?.name || BaseComponent.displayName || BaseComponent.name || 'ModelComponent';
-  const valuePropName = options?.valuePropName || 'value';
-  const trigger = options?.trigger || 'onChange';
-  const getValueFromEvent = options?.getValueFromEvent;
-  const registerPageStates = options?.registerPageStates || registerEmpty;
+
   const isFC = isFunctionComponent(BaseComponent);
 
   // 这里包上 view ，能够响应 model 变化
   const InnerModelComponent = view((props: P & TangoComponentProps) => {
+    const config = options?.registerValue || {};
+
+    const valuePropName = config.valuePropName || 'value';
+    const trigger = config.trigger || 'onChange';
+    const getValueFromEvent = config.getValueFromEvent;
+    const registerPageStates = options?.registerPageStates || registerEmpty;
     const { tid, defaultValue, innerRef, ...rest } = props;
 
     // TODO: 所有属性增加一层 template 解析 prop="{{input1.value}}" 进行一下替换
@@ -99,7 +109,7 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
       return () => {
         tangoBoot.clearPageState(tid);
       };
-    }, [tid, defaultValue]);
+    }, [tid, defaultValue, registerPageStates]);
 
     const value = tangoBoot.getPageStateValue(tid);
 
@@ -124,12 +134,12 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
     return <BaseComponent {...(rest as P)} {...override} ref={mergeRefs(ref, innerRef)} />;
   });
 
-  const ModelComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
+  const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
     const { tid, innerRef, ...rest } = props;
 
     const refs = isFC ? undefined : mergeRefs(ref, innerRef); // innerRef 兼容旧版本
 
-    if (!tid) {
+    if (!tid && options.registerValue) {
       return <BaseComponent ref={refs} {...(rest as P)} />;
     }
 
@@ -137,8 +147,8 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
     return <InnerModelComponent {...props} innerRef={refs} />;
   });
 
-  hoistNonReactStatics(ModelComponent, BaseComponent);
-  ModelComponent.displayName = `defineComponent(${displayName})`;
+  hoistNonReactStatics(TangoComponent, BaseComponent);
+  TangoComponent.displayName = `defineComponent(${displayName})`;
 
-  return ModelComponent;
+  return TangoComponent;
 }
