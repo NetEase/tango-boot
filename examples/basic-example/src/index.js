@@ -3,9 +3,9 @@ import routes from './routes';
 import './stores';
 import './services';
 
-// window.__TANGO_DESIGNER__ = {
-//   version: '1.0.0',
-// };
+window.__TANGO_DESIGNER__ = {
+  version: '1.0.0',
+};
 
 runApp({
   boot: {

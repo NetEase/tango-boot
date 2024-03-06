@@ -99,8 +99,9 @@ export function defineComponent<P>(
   const displayName =
     options?.name || BaseComponent.displayName || BaseComponent.name || 'ModelComponent';
   const draggable = options?.designerConfig?.draggable || true;
-  const hasWrapper = options?.designerConfig?.hasWrapper || true;
-  const display = options?.designerConfig?.display || 'block';
+  const hasWrapper = options?.designerConfig?.hasWrapper || false;
+  const wrapperDisplay = options?.designerConfig?.display;
+
   const isFC = isFunctionComponent(BaseComponent);
 
   // 这里包上 view ，能够响应 model 变化
@@ -186,7 +187,7 @@ export function defineComponent<P>(
         return (
           <DndBox
             name={displayName}
-            display={display}
+            display={wrapperDisplay}
             style={options.designerConfig?.wrapperStyle}
             {...designerProps}
           >
