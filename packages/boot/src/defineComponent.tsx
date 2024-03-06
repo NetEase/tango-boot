@@ -1,6 +1,11 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 import { view } from '@risingstack/react-easy-state';
-import { hoistNonReactStatics, isFunction, isFunctionComponent } from '@music163/tango-helpers';
+import {
+  SLOT,
+  hoistNonReactStatics,
+  isFunction,
+  isFunctionComponent,
+} from '@music163/tango-helpers';
 import tangoBoot from './global';
 import { mergeRefs } from './helpers';
 
@@ -17,6 +22,29 @@ interface RegisterValueConfig {
    * 设置从事件回调中获取 value 值的方法
    */
   getValueFromEvent?: (...args: any[]) => any;
+}
+
+interface DesignerConfig {
+  /**
+   * 是否可拖拽
+   */
+  draggable?: boolean;
+  /**
+   * 是否有包裹容器
+   */
+  hasWrapper?: boolean;
+  /**
+   * 容器自定义样式
+   */
+  wrapperStyle?: React.CSSProperties;
+  /**
+   * 展示方式
+   */
+  display?: DndBoxProps['display'];
+  /**
+   * 自定义渲染
+   */
+  render?: (props: any) => React.ReactNode;
 }
 
 interface DefineComponentConfig {
@@ -36,6 +64,10 @@ interface DefineComponentConfig {
     state: { setValue: (nextValue: any) => any; getValue: () => any },
     ref: any,
   ) => any;
+  /**
+   * 组件的设计器配置
+   */
+  designerConfig: DesignerConfig;
 }
 
 export interface TangoComponentProps {
@@ -70,7 +102,9 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
 ) {
   const displayName =
     options?.name || BaseComponent.displayName || BaseComponent.name || 'ModelComponent';
-
+  const draggable = options?.designerConfig?.draggable || true;
+  const hasWrapper = options?.designerConfig?.hasWrapper || true;
+  const display = options?.designerConfig?.display || 'block';
   const isFC = isFunctionComponent(BaseComponent);
 
   // 这里包上 view ，能够响应 model 变化
@@ -128,27 +162,71 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
     const override = {
       [valuePropName]: value ?? defaultValue,
       [trigger]: onChange,
-      'data-id': tid,
     };
 
     return <BaseComponent {...(rest as P)} {...override} ref={mergeRefs(ref, innerRef)} />;
   });
 
+  // TIP: view 不支持 forwardRef，这里包一层，包到内部组件去消费，外层支持访问到原始的 ref，避免与原始代码产生冲突
   const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
     const { tid, innerRef, ...rest } = props;
 
     const refs = isFC ? undefined : mergeRefs(ref, innerRef); // innerRef 兼容旧版本
 
+    let ret;
+
     if (!tid && options.registerValue) {
-      return <BaseComponent ref={refs} {...(rest as P)} />;
+      ret = <BaseComponent ref={refs} {...(rest as P)} />;
+    } else {
+      ret = <InnerModelComponent {...props} innerRef={refs} />;
     }
 
-    // TIP: view 不支持 forwardRef，这里包一层，包到内部组件去消费，外层支持访问到原始的 ref
-    return <InnerModelComponent {...props} innerRef={refs} />;
+    // TODO: 在 helpers 中提供 isInTangoDesigner 方法
+    if ((window as any).__TANGO_DESIGNER__) {
+      const designerProps = {
+        draggable: draggable ? true : undefined,
+        'data-tid': tid,
+        'data-dnd': props[SLOT.dnd],
+      };
+      if (hasWrapper) {
+        return (
+          <DndBox
+            name={displayName}
+            display={display}
+            style={options.designerConfig?.wrapperStyle}
+            {...designerProps}
+          >
+            {ret}
+          </DndBox>
+        );
+      } else {
+        return React.cloneElement(ret, designerProps);
+      }
+    } else {
+      return ret;
+    }
   });
 
   hoistNonReactStatics(TangoComponent, BaseComponent);
   TangoComponent.displayName = `defineComponent(${displayName})`;
 
   return TangoComponent;
+}
+
+interface DndBoxProps extends React.ComponentPropsWithoutRef<'div'> {
+  name?: string;
+  display?: 'block' | 'inline-block' | 'inline';
+}
+
+function DndBox({ name, display, children, style: styleProp, ...rest }: DndBoxProps) {
+  const style = {
+    display,
+    minHeight: 4,
+    ...styleProp,
+  };
+  return (
+    <div className={`${name}-designer tango-dndBox`} style={style} {...rest}>
+      {children}
+    </div>
+  );
 }
