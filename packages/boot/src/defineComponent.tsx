@@ -169,7 +169,7 @@ export function defineComponent<P>(
     const refs = isFC ? undefined : ref; // innerRef 兼容旧版本
 
     let ret;
-    if (!tid && options.registerValue) {
+    if (!tid && !options.registerValue) {
       ret = <BaseComponent ref={refs} {...(rest as P)} />;
     } else {
       ret = <InnerModelComponent {...props} innerRef={refs} />;
