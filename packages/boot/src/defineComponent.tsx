@@ -67,7 +67,7 @@ interface DefineComponentConfig {
   /**
    * 组件的设计器配置
    */
-  designerConfig: DesignerConfig;
+  designerConfig?: DesignerConfig;
 }
 
 interface TangoModelComponentProps extends TangoComponentProps {
@@ -95,20 +95,18 @@ export function defineComponent<P>(
   options?: DefineComponentConfig,
 ) {
   const displayName =
-    options?.name || BaseComponent.displayName || BaseComponent.name || 'ModelComponent';
-  const draggable = options?.designerConfig?.draggable || true;
-  const hasWrapper = options?.designerConfig?.hasWrapper || false;
-  const wrapperDisplay = options?.designerConfig?.display;
+    options?.name || BaseComponent.displayName || BaseComponent.name || 'TangoComponent';
+  const designerConfig = options?.designerConfig || {};
 
   const isFC = isFunctionComponent(BaseComponent);
 
   // 这里包上 view ，能够响应 model 变化
   const InnerModelComponent = view((props: P & TangoModelComponentProps) => {
-    const config = options?.registerValue || {};
+    const valueConfig = options?.registerValue || {};
 
-    const valuePropName = config.valuePropName || 'value';
-    const trigger = config.trigger || 'onChange';
-    const getValueFromEvent = config.getValueFromEvent;
+    const valuePropName = valueConfig.valuePropName || 'value';
+    const trigger = valueConfig.trigger || 'onChange';
+    const getValueFromEvent = valueConfig.getValueFromEvent;
     const registerPageStates = options?.registerPageStates || registerEmpty;
     const { tid, defaultValue, innerRef, ...rest } = props;
 
@@ -168,24 +166,24 @@ export function defineComponent<P>(
     const refs = isFC ? undefined : ref; // innerRef 兼容旧版本
 
     let ret;
-    if (!tid && !options.registerValue) {
-      ret = <BaseComponent ref={refs} {...(rest as P)} />;
-    } else {
+    if (options?.registerValue && tid) {
       ret = <InnerModelComponent {...props} innerRef={refs} />;
+    } else {
+      ret = <BaseComponent ref={refs} {...(rest as P)} />;
     }
 
     // TODO: 在 helpers 中提供 isInTangoDesigner 方法
     if ((window as any).__TANGO_DESIGNER__) {
       const designerProps = {
-        draggable: draggable ? true : undefined,
+        draggable: designerConfig.draggable ?? true,
         'data-tid': tid,
         'data-dnd': props[SLOT.dnd],
       };
-      if (hasWrapper) {
+      if (designerConfig.hasWrapper) {
         return (
           <DndBox
             name={displayName}
-            display={wrapperDisplay}
+            display={designerConfig.display}
             style={options.designerConfig?.wrapperStyle}
             {...designerProps}
           >
