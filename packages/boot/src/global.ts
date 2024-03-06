@@ -1,3 +1,4 @@
+import { getValue, setValue } from '@music163/tango-helpers';
 import { store } from '@risingstack/react-easy-state';
 
 type StoreType = ReturnType<typeof store>;
@@ -8,6 +9,7 @@ const globalTango = {
   stores: {
     currentPage: store({}),
   },
+  page: {},
   refs: {},
 
   getStore(name: string): StoreType {
@@ -53,6 +55,35 @@ const globalTango = {
     if (!globalTango.getStore(name)) {
       globalTango.stores[name] = storeInstance;
     }
+  },
+
+  getPageState(name: string) {
+    return getValue(globalTango.page, name);
+  },
+
+  getPageStateValue(name: string) {
+    return getValue(globalTango.page, [name, 'value'].join('.'));
+  },
+
+  setPageState(name: string, value: any) {
+    if (!name) {
+      return;
+    }
+    setValue(globalTango.page, name, value);
+  },
+
+  setPageStateValue(name: string, value: any) {
+    if (!name) {
+      return;
+    }
+    setValue(globalTango.page, [name, 'value'].join('.'), value);
+  },
+
+  clearPageState(name: string) {
+    if (!name) {
+      this.page = {};
+    }
+    delete this.page[name];
   },
 
   registerServices(services: any, namespace?: string) {

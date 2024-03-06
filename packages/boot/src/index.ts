@@ -10,6 +10,7 @@ export default globalTango;
 export * from './definePage';
 export * from './defineServices';
 export * from './defineStore';
+export * from './defineComponent';
 export * from './runApp';
 export * from './Collector';
 
