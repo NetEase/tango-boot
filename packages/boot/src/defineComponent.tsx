@@ -70,33 +70,29 @@ interface DefineComponentConfig {
   designerConfig: DesignerConfig;
 }
 
-export interface TangoComponentProps {
-  /**
-   * 组件的 ID -- 用户跟踪组件，并自动将组件的值绑定到 model 上；同时用作 track id
-   */
-  tid?: string;
+interface TangoModelComponentProps extends TangoComponentProps {
   /**
    * 默认值
    */
   defaultValue?: any;
   /**
-   * @deprecated 直接用 ref
+   * 内部 ref
    */
   innerRef?: React.ComponentRef<any>;
 }
 
-export interface TangoComponentBaseProps {
+export interface TangoComponentProps {
   /**
-   * 值改变时的回调
+   * 组件的 ID -- 用户跟踪组件，并自动将组件的值绑定到 model 上；同时用作 track id
    */
-  onChange?: (...args: any[]) => object;
+  tid?: string;
 }
 
 const registerEmpty = () => ({});
 
 // TODO: 合并 withDnd 和 defineComponent
 
-export function defineComponent<P extends TangoComponentBaseProps = TangoComponentBaseProps>(
+export function defineComponent<P>(
   BaseComponent: React.ComponentType<P>,
   options?: DefineComponentConfig,
 ) {
@@ -108,7 +104,7 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
   const isFC = isFunctionComponent(BaseComponent);
 
   // 这里包上 view ，能够响应 model 变化
-  const InnerModelComponent = view((props: P & TangoComponentProps) => {
+  const InnerModelComponent = view((props: P & TangoModelComponentProps) => {
     const config = options?.registerValue || {};
 
     const valuePropName = config.valuePropName || 'value';
@@ -169,12 +165,10 @@ export function defineComponent<P extends TangoComponentBaseProps = TangoCompone
 
   // TIP: view 不支持 forwardRef，这里包一层，包到内部组件去消费，外层支持访问到原始的 ref，避免与原始代码产生冲突
   const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
-    const { tid, innerRef, ...rest } = props;
-
-    const refs = isFC ? undefined : mergeRefs(ref, innerRef); // innerRef 兼容旧版本
+    const { tid, ...rest } = props;
+    const refs = isFC ? undefined : ref; // innerRef 兼容旧版本
 
     let ret;
-
     if (!tid && options.registerValue) {
       ret = <BaseComponent ref={refs} {...(rest as P)} />;
     } else {
