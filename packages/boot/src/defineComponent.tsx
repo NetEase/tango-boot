@@ -24,6 +24,12 @@ interface RegisterValueConfig {
   getValueFromEvent?: (...args: any[]) => any;
 }
 
+interface DesignerRenderProps {
+  originalProps: Record<string, any>;
+  designerProps: Record<string, any>;
+  children: React.ReactElement;
+}
+
 interface DesignerConfig {
   /**
    * 是否可拖拽
@@ -44,7 +50,11 @@ interface DesignerConfig {
   /**
    * 自定义渲染
    */
-  render?: (props: any) => React.ReactNode;
+  render?: (props: DesignerRenderProps) => React.ReactNode;
+  /**
+   * 注入给组件的默认属性
+   */
+  defaultProps?: Record<string, any>;
 }
 
 interface DefineComponentConfig {
@@ -164,12 +174,13 @@ export function defineComponent<P>(
   const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
     const { tid, ...rest } = props;
     const refs = isFC ? undefined : ref; // innerRef 兼容旧版本
+    const defaultProps = designerConfig.defaultProps || {};
 
     let ret;
     if (options?.registerValue && tid) {
-      ret = <InnerModelComponent {...props} innerRef={refs} />;
+      ret = <InnerModelComponent innerRef={refs} {...defaultProps} {...props} />;
     } else {
-      ret = <BaseComponent ref={refs} {...(rest as P)} />;
+      ret = <BaseComponent ref={refs} {...defaultProps} {...(rest as P)} />;
     }
 
     // TODO: 在 helpers 中提供 isInTangoDesigner 方法
@@ -182,7 +193,7 @@ export function defineComponent<P>(
 
       if (designerConfig.render) {
         // 自定义渲染设计器样式
-        return designerConfig.render({ ...designerProps, children: ret });
+        return designerConfig.render({ designerProps, originalProps: props, children: ret });
       }
 
       if (designerConfig.hasWrapper) {
