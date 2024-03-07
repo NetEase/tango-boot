@@ -179,6 +179,12 @@ export function defineComponent<P>(
         'data-tid': tid,
         'data-dnd': props[SLOT.dnd],
       };
+
+      if (designerConfig.render) {
+        // 自定义渲染设计器样式
+        return designerConfig.render({ ...designerProps, children: ret });
+      }
+
       if (designerConfig.hasWrapper) {
         return (
           <DndBox
