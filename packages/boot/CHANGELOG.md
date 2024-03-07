@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.2.3...@music163/tango-boot@0.2.4) (2024-03-07)
+
+
+### Bug Fixes
+
+* custom render in designerConfig ([39b02fb](https://github.com/music163/tango-boot/commit/39b02fb6f680351efef2182fe1a8c26103a7b649))
+
+
+
+
+
 ## [0.2.3](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.2.2...@music163/tango-boot@0.2.3) (2024-03-06)
 
 
