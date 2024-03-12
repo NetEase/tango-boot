@@ -1,2 +1,3 @@
-export * from './input';
-export * from './json-view';
+export { Button } from './button';
+export { Input } from './input';
+export { JsonView } from './json-view';

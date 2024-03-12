@@ -1,7 +1,7 @@
 import React from 'react';
 import { definePage } from '@music163/tango-boot';
-import { Layout, Button, Card } from 'antd';
-import { Input } from '../components';
+import { Layout, Card } from 'antd';
+import { Input, Button } from '../components';
 
 class App extends React.Component {
   render() {
@@ -16,6 +16,7 @@ class App extends React.Component {
           <Input tid="input1" defaultValue="hello world" />
           <div>输入框的值为：{tango.page.input1?.value}</div>
           <Button
+            tid="button1"
             onClick={() => {
               tango.page.input1?.setValue('hello');
             }}
