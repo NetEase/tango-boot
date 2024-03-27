@@ -5,6 +5,7 @@ import {
   hoistNonReactStatics,
   isFunction,
   isFunctionComponent,
+  isInTangoDesignMode,
 } from '@music163/tango-helpers';
 import tangoBoot from './global';
 import { mergeRefs } from './helpers';
@@ -183,8 +184,7 @@ export function defineComponent<P>(
       ret = <BaseComponent ref={refs} {...defaultProps} {...(rest as P)} />;
     }
 
-    // TODO: 在 helpers 中提供 isInTangoDesigner 方法
-    if ((window as any).__TANGO_DESIGNER__) {
+    if (isInTangoDesignMode()) {
       const designerProps = {
         draggable: designerConfig.draggable ?? true,
         'data-tid': tid,

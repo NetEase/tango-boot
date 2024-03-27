@@ -1535,10 +1535,10 @@
     write-pkg "4.0.0"
     yargs "16.2.0"
 
-"@music163/tango-helpers@^1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.npmjs.org/@music163/tango-helpers/-/tango-helpers-1.0.0-alpha.2.tgz#d85f5dee1db9661728c8aaff2bf73195fbfbae8d"
-  integrity sha512-khHH39+uUIHDyPPcmeCBGBqfZzyVNJyerRbY13QaJ8lMA08PFjwi7XZ6klFBn6gR5VtUoU+1JXHEeGkXPQMFng==
+"@music163/tango-helpers@^1.0.0-alpha.5":
+  version "1.0.0-alpha.5"
+  resolved "https://registry.npmjs.org/@music163/tango-helpers/-/tango-helpers-1.0.0-alpha.5.tgz#254a1b269b660e7408ad57a7fae29e89d29b7882"
+  integrity sha512-+phQ1+BI1GjPMrJEELPjxaQCgh9JcONcKIPKP61wqofujeHW1OOKIScIEHdOtQ55i4wLfWZ3rv/+t0HmvuFNuQ==
   dependencies:
     hoist-non-react-statics "^3.3.2"
     lodash.get "^4.4.2"

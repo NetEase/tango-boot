@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@music163/request": "^0.2.0",
-    "@music163/tango-helpers": "^1.0.0-alpha.2",
+    "@music163/tango-helpers": "^1.0.0-alpha.5",
     "@risingstack/react-easy-state": "^6.3.0",
     "@types/react-router-config": "^5.0.7",
     "history": "^4.10.1",
