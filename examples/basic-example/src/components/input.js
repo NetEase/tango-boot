@@ -3,16 +3,26 @@ import { Input as AntInput } from 'antd';
 
 export const Input = defineComponent(AntInput, {
   name: 'Input',
-  registerValue: {
-    valuePropName: 'value',
-    trigger: 'onChange',
-    getValueFromEvent: (e) => e.target.value,
-  },
-  registerPageState(state) {
-    return {
-      clear() {
-        state.setValue('');
-      },
-    };
+  registerState: {
+    getInitStates({ setPageState }, props) {
+      return {
+        value: props.defaultValue ?? '',
+        clear() {
+          setPageState({ value: '' });
+        },
+        setValue(nextValue) {
+          setPageState({ value: nextValue });
+        },
+      };
+    },
+
+    getTriggerProps({ setPageState, getPageState }) {
+      return {
+        value: getPageState()?.value,
+        onChange(e) {
+          setPageState({ value: e.target.value });
+        },
+      };
+    },
   },
 });

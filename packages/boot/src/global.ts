@@ -61,22 +61,15 @@ const globalTango = {
     return getValue(globalTango.page, name);
   },
 
-  getPageStateValue(name: string) {
-    return getValue(globalTango.page, [name, 'value'].join('.'));
-  },
-
   setPageState(name: string, value: any) {
     if (!name) {
       return;
     }
-    setValue(globalTango.page, name, value);
-  },
-
-  setPageStateValue(name: string, value: any) {
-    if (!name) {
-      return;
-    }
-    setValue(globalTango.page, [name, 'value'].join('.'), value);
+    const nextValue = {
+      ...globalTango.getPageState(name),
+      ...value,
+    };
+    setValue(globalTango.page, name, nextValue);
   },
 
   clearPageState(name: string) {

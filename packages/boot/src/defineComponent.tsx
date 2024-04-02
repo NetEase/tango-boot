@@ -1,28 +1,35 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 import { view } from '@risingstack/react-easy-state';
 import {
+  Dict,
   SLOT,
+  callAll,
   hoistNonReactStatics,
-  isFunction,
   isFunctionComponent,
   isInTangoDesignMode,
 } from '@music163/tango-helpers';
 import tangoBoot from './global';
 import { mergeRefs } from './helpers';
 
-interface RegisterValueConfig {
+interface IPageStateHandlers {
+  getPageState: () => Dict;
+  setPageState: (stateValue: Dict) => void;
+}
+
+interface RegisterStateConfig {
   /**
-   * 绑定的 value 属性名
+   * 用户自定义的组件状态
+   * @param props
+   * @param instance
+   * @returns
    */
-  valuePropName?: string;
+  getInitStates?: (handlers: IPageStateHandlers, props: any, instance: any) => any;
   /**
-   * 设置收集字段值变更的时机
+   * 用户自定义的触发器行为
+   * @param handlers
+   * @returns
    */
-  trigger?: string;
-  /**
-   * 设置从事件回调中获取 value 值的方法
-   */
-  getValueFromEvent?: (...args: any[]) => any;
+  getTriggerProps?: (handlers: IPageStateHandlers) => Dict;
 }
 
 interface DesignerRenderProps {
@@ -64,19 +71,11 @@ interface DefineComponentConfig {
    */
   name?: string;
   /**
-   * 从组件同步值到 model 的配置
+   * 同步组件状态到 tango.page 上
    */
-  registerValue?: false | RegisterValueConfig;
+  registerState?: RegisterStateConfig;
   /**
-   * 注册自定义的组件状态或行为
-   * @returns
-   */
-  registerPageStates?: (
-    state: { setValue: (nextValue: any) => any; getValue: () => any },
-    ref: any,
-  ) => any;
-  /**
-   * 组件的设计器配置
+   * 组件在设计态配置
    */
   designerConfig?: DesignerConfig;
 }
@@ -94,14 +93,19 @@ interface TangoModelComponentProps extends TangoComponentProps {
 
 export interface TangoComponentProps {
   /**
-   * 组件的 ID -- 用户跟踪组件，并自动将组件的值绑定到 model 上；同时用作 track id
+   * 组件 ID （兼容旧版设计）
+   */
+  id?: string;
+  /**
+   * 组件 ID，同时用于页面内的状态访问路径
    */
   tid?: string;
 }
 
 const registerEmpty = () => ({});
 
-export function defineComponent<P>(
+// TODO：支持本地组件的属性配置设置
+export function defineComponent<P = any>(
   BaseComponent: React.ComponentType<P>,
   options?: DefineComponentConfig,
 ) {
@@ -113,82 +117,79 @@ export function defineComponent<P>(
 
   // 这里包上 view ，能够响应 model 变化
   const InnerModelComponent = view((props: P & TangoModelComponentProps) => {
-    const valueConfig = options?.registerValue || {};
-
-    const valuePropName = valueConfig.valuePropName || 'value';
-    const trigger = valueConfig.trigger || 'onChange';
-    const getValueFromEvent = valueConfig.getValueFromEvent;
-    const registerPageStates = options?.registerPageStates || registerEmpty;
-    const { tid, defaultValue, innerRef, ...rest } = props;
-
-    // TODO: 所有属性增加一层 template 解析 prop="{{input1.value}}" 进行一下替换
-
     const ref = useRef();
+
+    const stateConfig = options?.registerState || {};
+
+    const getPageStates = stateConfig.getInitStates || registerEmpty;
+    const { tid, innerRef, ...rest } = props;
+
+    const setPageState = (nextState: Dict) => {
+      tangoBoot.setPageState(tid, nextState);
+    };
+
+    const getPageState = () => {
+      return tangoBoot.getPageState(tid);
+    };
+
     useEffect(() => {
       if (tid) {
-        const setValue = (nextValue: any) => {
-          tangoBoot.setPageState([tid, 'value'].join('.'), nextValue);
-        };
-        const getValue = () => {
-          return tangoBoot.getPageStateValue(tid);
-        };
-        const customStates = registerPageStates({ setValue, getValue }, ref.current);
+        const customStates = getPageStates({ getPageState, setPageState }, props, ref.current);
         tangoBoot.setPageState(tid, {
-          value: defaultValue,
-          setValue(newValue: any) {
-            setValue(newValue);
-          },
-          clear() {
-            setValue(undefined);
-          },
           ...customStates,
         });
       }
       return () => {
-        tangoBoot.clearPageState(tid);
+        if (tid) {
+          tangoBoot.clearPageState(tid);
+        }
       };
-    }, [tid, defaultValue, registerPageStates]);
+    }, [tid]);
 
-    const value = tangoBoot.getPageStateValue(tid);
+    const override: Dict = {};
 
-    const onChangeProp = rest[trigger];
-    const onChange = (next: any, ...args: any[]) => {
-      const nextValue = isFunction(getValueFromEvent) ? getValueFromEvent(next, ...args) : next;
-      if (tid) {
-        tangoBoot.setPageStateValue(tid, nextValue);
+    let userTriggerProps = {};
+    if (tid) {
+      userTriggerProps = stateConfig.getTriggerProps?.({ getPageState, setPageState });
+      const handlerKeys = Object.keys(userTriggerProps);
+      if (handlerKeys.length) {
+        handlerKeys.forEach((key) => {
+          // FIXME: 应该只需要合并 function 类型的属性，其他属性不需要合并
+          if (props[key] || override[key]) {
+            userTriggerProps[key] = callAll(userTriggerProps[key], override[key], props[key]);
+          }
+        });
       }
+    }
 
-      if (isFunction(onChangeProp)) {
-        onChangeProp(next, ...args);
-      }
-    };
-
-    const override = {
-      [valuePropName]: value ?? defaultValue,
-      [trigger]: onChange,
-    };
-
-    return <BaseComponent {...(rest as P)} {...override} ref={mergeRefs(ref, innerRef)} />;
+    return (
+      <BaseComponent
+        {...(rest as P)}
+        {...override}
+        {...userTriggerProps}
+        ref={mergeRefs(ref, innerRef)}
+      />
+    );
   });
 
   // TIP: view 不支持 forwardRef，这里包一层，包到内部组件去消费，外层支持访问到原始的 ref，避免与原始代码产生冲突
   const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
-    const { tid, ...rest } = props;
-    const refs = isFC ? undefined : ref; // innerRef 兼容旧版本
+    const { tid } = props;
+    const refs = isFC ? undefined : ref;
     const defaultProps = designerConfig.defaultProps || {};
 
     let ret;
-    if (options?.registerValue && tid) {
+    if (options?.registerState && tid) {
       ret = <InnerModelComponent innerRef={refs} {...defaultProps} {...props} />;
     } else {
-      ret = <BaseComponent ref={refs} {...defaultProps} {...(rest as P)} />;
+      ret = <BaseComponent ref={refs} {...defaultProps} {...(props as P)} />;
     }
 
     if (isInTangoDesignMode()) {
       const designerProps = {
         draggable: designerConfig.draggable ?? true,
-        'data-tid': tid,
-        'data-dnd': props[SLOT.dnd],
+        [SLOT.id]: tid,
+        [SLOT.dnd]: props[SLOT.dnd],
       };
 
       if (designerConfig.render) {
