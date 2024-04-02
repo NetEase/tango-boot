@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.2.5...@music163/tango-boot@0.3.0) (2024-04-02)
+
+
+### Bug Fixes
+
+* check if in sandbox ([60d2e6e](https://github.com/music163/tango-boot/commit/60d2e6ea413915859defbf25169c8433cc296c60))
+
+
+### Features
+
+* refactor defineComponent ([140c38d](https://github.com/music163/tango-boot/commit/140c38d0e961fae35dafb2f9fbfcd3265db61120))
+
+
+
+
+
 ## [0.2.5](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.2.4...@music163/tango-boot@0.2.5) (2024-03-07)
 
 
