@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.0...@music163/tango-boot@0.3.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* add tango.pageStore ([8492613](https://github.com/music163/tango-boot/commit/8492613aecd998cf9fb597f23b0980bde125263d))
+
+
+
+
+
 # [0.3.0](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.2.5...@music163/tango-boot@0.3.0) (2024-04-02)
 
 
