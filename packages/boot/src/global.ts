@@ -12,6 +12,13 @@ const globalTango = {
   page: {},
   refs: {},
 
+  /**
+   * 获取当前页面的状态集合
+   */
+  get pageStore() {
+    return globalTango.page;
+  },
+
   getStore(name: string): StoreType {
     return globalTango.stores[name];
   },
