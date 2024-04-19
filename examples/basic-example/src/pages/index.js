@@ -12,13 +12,13 @@ class App extends React.Component {
           <button onClick={tango.stores.counter.add}>+</button>
           <button onClick={tango.stores.counter.decrement}>-</button>
         </Card>
-        <Card title="双向绑定 & 状态控制">
+        <Card title="通过 tid 实现状态控制">
           <Input tid="input1" defaultValue="hello world" />
-          <div>输入框的值为：{tango.page.input1?.value}</div>
+          <div>输入框的值为：{tango.pageStore.input1?.value}</div>
           <Button
             tid="button1"
             onClick={() => {
-              tango.page.input1?.setValue('hello');
+              tango.pageStore.input1?.setValue('hello');
             }}
           >
             setValue
