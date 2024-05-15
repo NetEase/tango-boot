@@ -12,6 +12,8 @@ const globalTango = {
   page: {},
   refs: {},
 
+  history: null as any,
+
   /**
    * 获取当前页面的状态集合
    */
@@ -94,6 +96,14 @@ const globalTango = {
         ...globalTango.services,
         ...services,
       };
+    }
+  },
+
+  navigateTo(routePath: string) {
+    if (globalTango.history) {
+      globalTango.history.push(routePath);
+    } else {
+      window.history.pushState({}, '', routePath);
     }
   },
 };

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 import { RouteConfig, renderRoutes } from 'react-router-config';
 import { History, createBrowserHistory, createHashHistory } from 'history';
+import globalTango from './global';
 
 export interface RunAppConfig {
   /**
@@ -26,6 +27,7 @@ export interface RunAppConfig {
   router?: {
     config: RouteConfig[];
     type?: 'browser' | 'hash';
+    basename?: string;
   };
   /**
    * 根组件的父容器设置，传入的组件将一次作为应用根节点的父级组件
@@ -47,7 +49,12 @@ function runReactApp(config: RunAppConfig) {
   if (routes) {
     // react router app
     const routerType = config.router?.type ?? 'hash';
-    const history = routerType === 'hash' ? createBrowserHistory() : createHashHistory();
+    const routerConfig = {
+      basename: config.router?.basename || '/',
+    };
+    const history =
+      routerType === 'hash' ? createBrowserHistory(routerConfig) : createHashHistory(routerConfig);
+    globalTango.history = history;
     element = <ReactRouterApp history={history} routes={routes} />;
   } else {
     // single entry app

@@ -7,6 +7,7 @@ class App extends React.Component {
   render() {
     return (
       <Layout style={{ minHeight: '100vh', gap: 24, padding: 24 }}>
+        <Button type="primary" onClick={() => tango.navigateTo('/fun')}>切换路由 /fun</Button>
         <Card title="计数器">
           <h1>{tango.stores.counter.number}</h1>
           <button onClick={tango.stores.counter.add}>+</button>
