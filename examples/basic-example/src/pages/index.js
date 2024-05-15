@@ -1,13 +1,18 @@
 import React from 'react';
 import { definePage } from '@music163/tango-boot';
-import { Layout, Card } from 'antd';
+import { Layout, Card, Text, Box } from '@music163/antd';
 import { Input, Button } from '../components';
 
 class App extends React.Component {
   render() {
     return (
       <Layout style={{ minHeight: '100vh', gap: 24, padding: 24 }}>
-        <Button type="primary" onClick={() => tango.navigateTo('/fun')}>切换路由 /fun</Button>
+        <Button type="primary" onClick={() => tango.navigateTo('/fun')}>
+          切换路由 /fun
+        </Button>
+        <Box>
+          <Text>hello</Text>
+        </Box>
         <Card title="计数器">
           <h1>{tango.stores.counter.number}</h1>
           <button onClick={tango.stores.counter.add}>+</button>

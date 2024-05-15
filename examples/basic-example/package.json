@@ -7,8 +7,8 @@
     "build": "webpack"
   },
   "dependencies": {
+    "@music163/antd": "^0.2.4",
     "@music163/tango-boot": "*",
-    "antd": "^5.8.3",
     "react-json-view": "^1.21.3"
   }
 }

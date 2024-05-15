@@ -45,7 +45,7 @@ module.exports = {
     moment: 'moment',
     'styled-components': 'styled',
     '@music163/tango-boot': 'TangoBoot',
-    antd: 'antd',
+    '@music163/antd': 'TangoAntd',
   },
   plugins: [
     new HtmlWebpackPlugin({
