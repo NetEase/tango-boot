@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.1...@music163/tango-boot@0.3.2) (2024-05-15)
+
+
+### Bug Fixes
+
+* add navigateTo ([f819074](https://github.com/music163/tango-boot/commit/f8190744c856b182e3ca1179ba6e373c54c90b7e))
+
+
+
+
+
 ## [0.3.1](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.0...@music163/tango-boot@0.3.1) (2024-04-18)
 
 
