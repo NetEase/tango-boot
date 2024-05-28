@@ -176,16 +176,17 @@ export function defineComponent<P = any>(
   const TangoComponent = forwardRef<unknown, P & TangoComponentProps>((props, ref) => {
     const { tid } = props;
     const refs = isFC ? undefined : ref;
-    const defaultProps = designerConfig.defaultProps || {};
 
     let ret;
     if (options?.registerState && tid) {
-      ret = <InnerModelComponent innerRef={refs} {...defaultProps} {...props} />;
+      ret = <InnerModelComponent innerRef={refs} {...props} />;
     } else {
-      ret = <BaseComponent ref={refs} {...defaultProps} {...(props as P)} />;
+      ret = <BaseComponent ref={refs} {...(props as P)} />;
     }
 
     if (isInTangoDesignMode()) {
+      const overrideProps = designerConfig.defaultProps;
+
       const designerProps = {
         draggable: designerConfig.draggable ?? true,
         [SLOT.id]: tid,
@@ -198,6 +199,9 @@ export function defineComponent<P = any>(
       }
 
       if (designerConfig.hasWrapper) {
+        if (overrideProps) {
+          ret = React.cloneElement(ret, overrideProps);
+        }
         return (
           <DndBox
             name={displayName}
@@ -209,7 +213,10 @@ export function defineComponent<P = any>(
           </DndBox>
         );
       } else {
-        return React.cloneElement(ret, designerProps);
+        return React.cloneElement(ret, {
+          ...designerProps,
+          ...overrideProps,
+        });
       }
     } else {
       return ret;
