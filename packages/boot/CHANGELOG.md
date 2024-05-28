@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.3...@music163/tango-boot@0.3.4) (2024-05-28)
+
+
+### Bug Fixes
+
+* override props for custom designer ([583a4e3](https://github.com/music163/tango-boot/commit/583a4e354de7ba3d7b2264f42fce6d0efe02c964))
+* update props override order ([029e6ff](https://github.com/music163/tango-boot/commit/029e6ff324e996fabd4cf97dc49d355bcf2ee515))
+
+
+
+
+
 ## [0.3.3](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.2...@music163/tango-boot@0.3.3) (2024-05-28)
 
 
