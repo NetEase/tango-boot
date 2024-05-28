@@ -194,6 +194,9 @@ export function defineComponent<P = any>(
       };
 
       if (designerConfig.render) {
+        if (overrideProps) {
+          ret = React.cloneElement(ret, overrideProps);
+        }
         // 自定义渲染设计器样式
         return designerConfig.render({ designerProps, originalProps: props, children: ret });
       }
