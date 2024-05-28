@@ -114,6 +114,7 @@ export function defineComponent<P = any>(
   const designerConfig = options?.designerConfig || {};
 
   const isFC = isFunctionComponent(BaseComponent);
+  const isDesignMode = isInTangoDesignMode();
 
   // 这里包上 view ，能够响应 model 变化
   const InnerModelComponent = view((props: P & TangoModelComponentProps) => {
@@ -177,15 +178,19 @@ export function defineComponent<P = any>(
     const { tid } = props;
     const refs = isFC ? undefined : ref;
 
-    let ret;
+    let renderComponent: (defaultProps?: P) => React.ReactElement;
     if (options?.registerState && tid) {
-      ret = <InnerModelComponent innerRef={refs} {...props} />;
+      renderComponent = (defaultProps: P) =>
+        React.createElement(InnerModelComponent, { innerRef: refs, ...defaultProps, ...props });
     } else {
-      ret = <BaseComponent ref={refs} {...(props as P)} />;
+      renderComponent = (defaultProps: P) =>
+        React.createElement(BaseComponent, { ref: refs, ...defaultProps, ...props });
     }
 
-    if (isInTangoDesignMode()) {
+    if (isDesignMode) {
+      // design mode
       const overrideProps = designerConfig.defaultProps;
+      const ret = renderComponent(overrideProps as P);
 
       const designerProps = {
         draggable: designerConfig.draggable ?? true,
@@ -194,17 +199,11 @@ export function defineComponent<P = any>(
       };
 
       if (designerConfig.render) {
-        if (overrideProps) {
-          ret = React.cloneElement(ret, overrideProps);
-        }
         // 自定义渲染设计器样式
         return designerConfig.render({ designerProps, originalProps: props, children: ret });
       }
 
       if (designerConfig.hasWrapper) {
-        if (overrideProps) {
-          ret = React.cloneElement(ret, overrideProps);
-        }
         return (
           <DndBox
             name={displayName}
@@ -216,13 +215,14 @@ export function defineComponent<P = any>(
           </DndBox>
         );
       } else {
-        return React.cloneElement(ret, {
-          ...designerProps,
+        return renderComponent({
           ...overrideProps,
-        });
+          ...designerProps,
+        } as any);
       }
     } else {
-      return ret;
+      // normal mode
+      return renderComponent();
     }
   });
 
