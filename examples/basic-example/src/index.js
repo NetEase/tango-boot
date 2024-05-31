@@ -12,5 +12,8 @@ runApp({
     mountElement: document.querySelector('#root'),
     qiankun: false,
   },
-  routes,
+  router: {
+    type: 'hash',
+    config: routes,
+  },
 });
