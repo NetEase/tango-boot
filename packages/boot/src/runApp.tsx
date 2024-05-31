@@ -48,12 +48,12 @@ function runReactApp(config: RunAppConfig) {
   const routes = config.router?.config ?? config.routes;
   if (routes) {
     // react router app
-    const routerType = config.router?.type ?? 'hash';
+    const routerType = config.router?.type ?? 'browser';
     const routerConfig = {
       basename: config.router?.basename || '/',
     };
     const history =
-      routerType === 'hash' ? createBrowserHistory(routerConfig) : createHashHistory(routerConfig);
+      routerType === 'hash' ? createHashHistory(routerConfig) : createBrowserHistory(routerConfig);
     globalTango.history = history;
     element = <ReactRouterApp history={history} routes={routes} />;
   } else {
