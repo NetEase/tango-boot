@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.5](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.4...@music163/tango-boot@0.3.5) (2024-05-31)
+
+
+### Bug Fixes
+
+* init router history & set default to browser history ([#3](https://github.com/music163/tango-boot/issues/3)) ([c3a1f81](https://github.com/music163/tango-boot/commit/c3a1f8129036fb86ad24c360943af6902dc893fe))
+
+
+
+
+
 ## [0.3.4](https://github.com/music163/tango-boot/compare/@music163/tango-boot@0.3.3...@music163/tango-boot@0.3.4) (2024-05-28)
 
 
